@@ -6,6 +6,7 @@
 //#include <vector>
 
 #include "units.h"
+#include "connector.h"
 
 
 
@@ -13,6 +14,8 @@ int main()
 {
 	int key;
 
+    int uX;
+    int uY;
 
 	if (!initscr())
     {
@@ -26,6 +29,9 @@ int main()
     clear();
     refresh();
 
+
+    Connector cr;
+
     // соединение с сервером.
 
 
@@ -38,7 +44,8 @@ int main()
 
 /////////////////// Вывод на экран.
     	clear();
-    	unit.print();
+    	//unit.print();
+        mvaddch(uX, uY, 'A');
     	refresh();
 ///////////////////
 
@@ -46,17 +53,26 @@ int main()
 		key = getch(); 
 
 		if (key == KEY_DOWN)
-			//команда на сервер
+        {   
+			cr.sendCommand(1);
+        }
 		if (key == KEY_UP)
-			//команда на сервер
+        {   
+			cr.sendCommand(2);
+        }
 		if (key == KEY_RIGHT)
-			//команда на сервер
+        {   
+			cr.sendCommand(3);
+        }
 		if (key == KEY_LEFT)
-			//команда на сервер
+        {   
+			cr.sendCommand(4);
+        }
 ///////////////////
 
 		// Получить координаты персонажа от сервера.
-
+        uX = cr.getX();
+        uY = cr.getY();
 
     }
 
