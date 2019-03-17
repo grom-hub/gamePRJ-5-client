@@ -3,19 +3,23 @@
 #include <cstdlib> // rand(), srand(), exit()
 //#include <ctime> // time()
 //#include <string>
-//#include <vector>
+#include <vector>
 
-#include "units.h"
 #include "connector.h"
 
 
+// struct cData
+// {
+//     int id;
+//     int uX;
+//     int uY;
+//     char uSkin;
+// }
 
-int main()
+int main(int args, char *argv[])
 {
 	int key;
 
-    int uX;
-    int uY;
 
 	if (!initscr())
     {
@@ -29,55 +33,58 @@ int main()
     clear();
     refresh();
 
-
-    Connector cr;
-
-    // соединение с сервером.
+    Connector cn;
+    std::vector<sData> playerData(5);
 
 
-    Units unit('A', 3, 3);
-	// сообщить серверу о создании персонжа.
+    cn.initPlayer(atoi(argv[1]), 'A');
+
+    cn.connectServer();
 
     while(key != 'q')
     {
-    	usleep(10000);
+    	usleep(100000);
 
-/////////////////// Вывод на экран.
-    	clear();
-    	//unit.print();
-        mvaddch(uX, uY, 'A');
-    	refresh();
-///////////////////
 
 /////////////////// Проверка нажатых клавиш.
 		key = getch(); 
 
 		if (key == KEY_DOWN)
         {   
-			cr.sendCommand(1);
+			cn.setCommand(1);
         }
 		if (key == KEY_UP)
         {   
-			cr.sendCommand(2);
+            cn.setCommand(2);	
         }
 		if (key == KEY_RIGHT)
         {   
-			cr.sendCommand(3);
+			cn.setCommand(3);
         }
 		if (key == KEY_LEFT)
         {   
-			cr.sendCommand(4);
+			cn.setCommand(4);
         }
 ///////////////////
 
-		// Получить координаты персонажа от сервера.
-        uX = cr.getX();
-        uY = cr.getY();
 
+        cn.syncData();
+        cn.getData(playerData);
+
+
+/////////////////// Вывод на экран.
+        clear();
+        //unit.print();
+        for (int i = 0; i < 5; ++i)
+        {
+            mvaddch(playerData[i].uX, playerData[i].uY, playerData[i].uSkin);
+        }
+        refresh();
+///////////////////
     }
 
 
-
+    cn.end();
     endwin();
 	return 0;
 }

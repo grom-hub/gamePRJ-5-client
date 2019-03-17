@@ -2,76 +2,89 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include <cstdlib>
-#include <cstdio>
 #include <unistd.h>
 #include <iostream>
+#include <cstring> // std::memcpy()
+//#include <cstdlib>
+//#include <cstdio>
+#include <vector>
 
 #include "connector.h"
 
 
-Connector::Connector()
+// Connector::Connector()
+// {
+// 	for (int i = 0; i < 5; ++i)
+// 	{
+// 		int connectorData[i].id = 0;
+// 	    int connectorData[i].uX = 0;
+// 	    int connectorData[i].uY = 0;
+// 	    char connectorData[i].uSkin = 'X';
+// 	}
+// }
+
+
+
+void Connector::initPlayer(int p1, char p2)
 {
-    a.x = 0;
-    a.y = 0;
+	connectorData.id = p1;
+	connectorData.uSkin = p2;
 }
 
 
-void Connector::sendCommand(int command)
+void Connector::connectServer()
 {
-    int sock;
-    struct sockaddr_in addr;
-    char buf[1024];
+	
+	sock = socket(AF_INET, SOCK_STREAM, 0); // Префикс AF означает "address family" - "семейство адресов".
+	                                        // SOCK_STREAM - (TCP) способ передачи данных по сети.
+	if(sock < 0)
+	{
+	    perror("socket");
+	    exit(1);
+	}
 
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(3425);
+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // INADDR_LOOPBACK - петля типа 127.0.0.1 (127.0.0.0/8).
 
-    sock = socket(AF_INET, SOCK_STREAM, 0); // Префикс AF означает "address family" - "семейство адресов".
-                                            // SOCK_STREAM - (TCP) способ передачи данных по сети.
-    if(sock < 0)
-    {
-        perror("socket");
-        exit(1);
-    }
-
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(3425);
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // INADDR_LOOPBACK - петля типа 127.0.0.1 (127.0.0.0/8).
-
-    if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    {
-        return;
-        perror("connect");
-        exit(2);
-    }
-   
-
-
-    send(sock, &command, sizeof(int), 0);
-    //   const void *msg
-
-    recv(sock, buf, 1024, 0); 
-    a = *((uData *)&buf);
-
-    
-    // std::cout << buf << std::endl;
-
-
-    shutdown(sock, SHUT_RDWR);
-    close(sock);
-
-    // if(shutdown(sock, SHUT_RDWR) == 0)
-    //     std::cout << "Shutdown - OK" << std::endl;
-    // if(close(sock) == 0)
-    //     std::cout << "Close - OK" << std::endl;
-    
-    //return 0;
+	if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+	{
+	    perror("connect");
+	    exit(2);
+	}
+	else
+		std::cout << "Connect - OK" << std::endl;
 }
 
-int Connector::getX()
+
+void Connector::setCommand(int p1)
 {
-    return a.x;
+	connectorData.command = p1;
 }
 
-int Connector::getY()
+
+void Connector::syncData()
 {
-    return a.y;
+	send(sock, &connectorData, sizeof(sData), 0);
+
+	connectorData.command = 0;
+	
+	recv(sock, buf, 1024, 0); 
+	std::memcpy(&serverData, &buf, sizeof(sData) * 5);
+}
+
+void Connector::getData(std::vector<sData> &playerData)
+{
+	for (int i = 0; i < 5; ++i)
+	{
+		playerData[i].uX = serverData[i].uX;
+		playerData[i].uY = serverData[i].uY;
+		playerData[i].uSkin = serverData[i].uSkin;	
+	}
+}
+
+void Connector::end()
+{
+	if(close(sock) == 0)
+	    std::cout << "Close - OK" << std::endl;
 }

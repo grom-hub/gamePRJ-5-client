@@ -1,8 +1,8 @@
-start: Client
-	./Client
+##start: clientMy
+##	./clientMy
 
-Client: main.cpp
-	g++ -o Client main.cpp units.cpp connector.cpp -lncurses -std=c++11
+clientMy: main.cpp
+	g++ -o clientMy main.cpp connector.cpp -lncurses -std=c++11
 
 clean:
-	rm Client
+	rm clientMy
