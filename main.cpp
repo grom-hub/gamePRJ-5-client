@@ -3,44 +3,42 @@
 #include <cstdlib> // rand(), srand(), exit()
 //#include <ctime> // time()
 //#include <string>
+#include <iostream> // cout
 #include <vector>
 
 #include "connector.h"
-
+#include "ncScreen.h"
 
 
 int main(int args, char *argv[])
 {
 	int key;
-
-
-	if (!initscr())
-    {
-        fprintf(stderr, "Error initialising ncurses.\n");
-        exit(1);
-    }
-    noecho();
-    curs_set(0);
-    keypad(stdscr, TRUE);
-    nodelay(stdscr, TRUE);
-    clear();
-    refresh();
-
-    Connector cn;
     std::vector<sData> playerData(5);
+
+    if(args < 2)
+    {
+        std::cout << "No args" << std::endl;
+        return 1;
+    }
+
+    NcScreen scr;
+    Connector cn;
+
 
 
     cn.initPlayer(atoi(argv[1]), 'A');
 
     cn.connectServer();
 
+    scr.initNcScreen();
+
+
     while(key != 'q')
     {
     	usleep(10000);
 
-
-/////////////////// Проверка нажатых клавиш.
 		key = getch(); 
+
 
 		if (key == KEY_DOWN)
         {   
@@ -58,26 +56,19 @@ int main(int args, char *argv[])
         {   
 			cn.setCommand(4);
         }
-///////////////////
 
 
         cn.syncData();
         cn.getData(playerData);
 
 
-/////////////////// Вывод на экран.
-        clear();
-        for (int i = 0; i < 5; ++i)
-        {
-            mvaddch(playerData[i].uX, playerData[i].uY, playerData[i].uSkin);
-        }
-        refresh();
-///////////////////
+        scr.printScreen(playerData);
+
     }
 
 
     cn.end();
-    endwin();
+    scr.exitNcScreen();
 	return 0;
 }
 
