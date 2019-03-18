@@ -8,13 +8,6 @@
 #include "connector.h"
 
 
-// struct cData
-// {
-//     int id;
-//     int uX;
-//     int uY;
-//     char uSkin;
-// }
 
 int main(int args, char *argv[])
 {
@@ -43,7 +36,7 @@ int main(int args, char *argv[])
 
     while(key != 'q')
     {
-    	usleep(100000);
+    	usleep(10000);
 
 
 /////////////////// Проверка нажатых клавиш.
@@ -74,7 +67,6 @@ int main(int args, char *argv[])
 
 /////////////////// Вывод на экран.
         clear();
-        //unit.print();
         for (int i = 0; i < 5; ++i)
         {
             mvaddch(playerData[i].uX, playerData[i].uY, playerData[i].uSkin);
@@ -88,3 +80,4 @@ int main(int args, char *argv[])
     endwin();
 	return 0;
 }
+

@@ -65,12 +65,23 @@ void Connector::setCommand(int p1)
 
 void Connector::syncData()
 {
-	send(sock, &connectorData, sizeof(sData), 0);
+
+	buf[0] = 1;
+	std::memcpy(&buf[1], &connectorData, sizeof(sData)); 
+
+	send(sock, buf, sizeof(sData) + 1, 0);
+
 
 	connectorData.command = 0;
 	
+
 	recv(sock, buf, 1024, 0); 
-	std::memcpy(&serverData, &buf, sizeof(sData) * 5);
+
+	if (buf[0] == 1)
+	{
+	    std::memcpy(&serverData, &buf[1], sizeof(sData) * 5); 
+	}
+  
 }
 
 void Connector::getData(std::vector<sData> &playerData)
@@ -88,3 +99,23 @@ void Connector::end()
 	if(close(sock) == 0)
 	    std::cout << "Close - OK" << std::endl;
 }
+
+
+//primer 
+
+// mData dt;
+// dt.x = 1;
+// dt.y = 2;
+
+// buf[0] = 1;
+// std::memcpy(&buf[1], &dt, sizeof(mData)); 
+// send(sock, buf, sizeof(mData) + 1, 0);
+
+
+
+// recv(sock, buf, 1024, 0);  
+
+// if (buf[0] == 1)
+// {
+//     std::memcpy(&dt, &buf[1], sizeof(mData)); 
+// }
