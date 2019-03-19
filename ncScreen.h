@@ -9,6 +9,7 @@ public:
 	void initNcScreen();
 	void printScreen(std::vector<sData> &playerData);
 	void exitNcScreen();
+	int getInput();
 
 
 

@@ -34,9 +34,9 @@ public:
 private:
 	sData connectorData;
 	sData serverData[5];
-	int myid;
-	int pSkin;
-	int command;
+	// int myid;
+	// int pSkin;
+	// int command;
 
 	int sock;
 	struct sockaddr_in addr;

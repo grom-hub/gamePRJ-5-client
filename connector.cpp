@@ -52,8 +52,6 @@ void Connector::connectServer()
 	    perror("connect");
 	    exit(2);
 	}
-	else
-		std::cout << "Connect - OK" << std::endl;
 }
 
 
@@ -66,18 +64,29 @@ void Connector::setCommand(int p1)
 void Connector::syncData()
 {
 
-	buf[0] = 1;
-	std::memcpy(&buf[1], &connectorData, sizeof(sData)); 
+	if(connectorData.command == 0)
+	{
+		buf[0] = 1;
 
-	send(sock, buf, sizeof(sData) + 1, 0);
+		send(sock, buf, 1, 0);
+	}
+	else
+	{
+		buf[0] = 2;
+
+		std::memcpy(&buf[1], &connectorData, sizeof(sData)); 
+
+		send(sock, buf, sizeof(sData) + 1, 0);
+
+	}
 
 
-	connectorData.command = 0;
+	//connectorData.command = 0;
 	
 
 	recv(sock, buf, 1024, 0); 
 
-	if (buf[0] == 1)
+	if (buf[0] == 2)
 	{
 	    std::memcpy(&serverData, &buf[1], sizeof(sData) * 5); 
 	}

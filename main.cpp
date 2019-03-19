@@ -1,6 +1,6 @@
-#include <ncurses.h>
+//#include <ncurses.h>
 #include <unistd.h> // usleep()
-#include <cstdlib> // rand(), srand(), exit()
+//#include <cstdlib> // rand(), srand(), exit()
 //#include <ctime> // time()
 //#include <string>
 #include <iostream> // cout
@@ -12,10 +12,10 @@
 
 int main(int args, char *argv[])
 {
-	int key;
+    int input;
     std::vector<sData> playerData(5);
 
-    if(args < 2)
+    if(args < 3)
     {
         std::cout << "No args" << std::endl;
         return 1;
@@ -26,41 +26,25 @@ int main(int args, char *argv[])
 
 
 
-    cn.initPlayer(atoi(argv[1]), 'A');
+    cn.initPlayer(atoi(argv[1]), *argv[2]);
 
     cn.connectServer();
 
     scr.initNcScreen();
 
 
-    while(key != 'q')
+    while(input != 'q')
     {
     	usleep(10000);
 
-		key = getch(); 
 
+        input = scr.getInput();
 
-		if (key == KEY_DOWN)
-        {   
-			cn.setCommand(1);
-        }
-		if (key == KEY_UP)
-        {   
-            cn.setCommand(2);	
-        }
-		if (key == KEY_RIGHT)
-        {   
-			cn.setCommand(3);
-        }
-		if (key == KEY_LEFT)
-        {   
-			cn.setCommand(4);
-        }
-
+        cn.setCommand(input);
 
         cn.syncData();
-        cn.getData(playerData);
 
+        cn.getData(playerData);
 
         scr.printScreen(playerData);
 
