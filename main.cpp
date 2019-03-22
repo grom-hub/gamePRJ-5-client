@@ -3,6 +3,7 @@
 //#include <cstdlib> // rand(), srand(), exit()
 //#include <ctime> // time()
 //#include <string>
+#include <cstring> // std::memcpy()
 #include <iostream> // cout
 #include <vector>
 
@@ -10,10 +11,24 @@
 #include "ncScreen.h"
 
 
+struct sData
+{
+    int id;
+    int x;
+    int y;
+    char skin;
+    int command;
+};
+
+
 int main(int args, char *argv[])
 {
     int input;
-    std::vector<sData> playerData(5);
+    char sendBuf[1024];
+    char recvBuf[1024];
+    std::vector<toScreen> printObject(5);
+    std::vector<sData> serverData(5);
+
 
     if(args < 3)
     {
@@ -26,7 +41,6 @@ int main(int args, char *argv[])
 
 
 
-    cn.initPlayer(atoi(argv[1]), *argv[2]);
 
     cn.connectServer();
 
@@ -40,13 +54,26 @@ int main(int args, char *argv[])
 
         input = scr.getInput();
 
-        cn.setCommand(input);
 
-        cn.syncData();
+        sendBuf[0] = 1;
 
-        cn.getData(playerData);
 
-        scr.printScreen(playerData);
+        cn.syncData(sendBuf, recvBuf);
+
+
+        std::memcpy(serverData.data(), &recvBuf[2], serverData.size()*sizeof(sData));
+
+        // break;
+
+        for (int i = 0; i < 5; ++i)
+        {
+            printObject[i].skin = serverData[i].skin;
+            printObject[i].x = serverData[i].x;
+            printObject[i].y = serverData[i].y;
+        }
+
+
+        scr.printScreen(printObject);
 
     }
 

@@ -12,24 +12,7 @@
 #include "connector.h"
 
 
-// Connector::Connector()
-// {
-// 	for (int i = 0; i < 5; ++i)
-// 	{
-// 		int connectorData[i].id = 0;
-// 	    int connectorData[i].uX = 0;
-// 	    int connectorData[i].uY = 0;
-// 	    char connectorData[i].uSkin = 'X';
-// 	}
-// }
 
-
-
-void Connector::initPlayer(int p1, char p2)
-{
-	connectorData.id = p1;
-	connectorData.uSkin = p2;
-}
 
 
 void Connector::connectServer()
@@ -55,53 +38,15 @@ void Connector::connectServer()
 }
 
 
-void Connector::setCommand(int p1)
-{
-	connectorData.command = p1;
-}
-
-
-void Connector::syncData()
+void Connector::syncData(char *sendBuf, char *recvBuf)
 {
 
-	if(connectorData.command == 0)
-	{
-		buf[0] = 1;
+	send(sock, sendBuf, 1024, 0);	
 
-		send(sock, buf, 1, 0);
-	}
-	else
-	{
-		buf[0] = 2;
-
-		std::memcpy(&buf[1], &connectorData, sizeof(sData)); 
-
-		send(sock, buf, sizeof(sData) + 1, 0);
-
-	}
-
-
-	//connectorData.command = 0;
-	
-
-	recv(sock, buf, 1024, 0); 
-
-	if (buf[0] == 2)
-	{
-	    std::memcpy(&serverData, &buf[1], sizeof(sData) * 5); 
-	}
-  
+	recv(sock, recvBuf, 1024, 0); 
+ 
 }
 
-void Connector::getData(std::vector<sData> &playerData)
-{
-	for (int i = 0; i < 5; ++i)
-	{
-		playerData[i].uX = serverData[i].uX;
-		playerData[i].uY = serverData[i].uY;
-		playerData[i].uSkin = serverData[i].uSkin;	
-	}
-}
 
 void Connector::end()
 {
@@ -110,6 +55,10 @@ void Connector::end()
 }
 
 
+
+
+
+//------
 //primer 
 
 // mData dt;
@@ -128,3 +77,35 @@ void Connector::end()
 // {
 //     std::memcpy(&dt, &buf[1], sizeof(mData)); 
 // }
+//------
+
+
+
+//------
+// if(connectorData.command == 0)
+// 	{
+// 		buf[0] = 1;
+
+// 		send(sock, buf, 1, 0);
+// 	}
+// 	else
+// 	{
+// 		buf[0] = 2;
+
+// 		std::memcpy(&buf[1], &connectorData, sizeof(sData)); 
+
+// 		send(sock, buf, sizeof(sData) + 1, 0);
+
+// 	}
+
+
+// 	//connectorData.command = 0;
+	
+
+// 	recv(sock, buf, 1024, 0); 
+
+// 	if (buf[0] == 2)
+// 	{
+// 	    std::memcpy(&serverData, &buf[1], sizeof(sData) * 5); 
+// 	}
+//-------

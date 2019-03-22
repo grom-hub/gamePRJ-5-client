@@ -48,36 +48,15 @@ int NcScreen::getInput()
             return 0;
     }
 
-
-    // if (key == KEY_DOWN)
-    // {   
-    //     return 1;
-    // }
-    // if (key == KEY_UP)
-    // {   
-    //     return 2;   
-    // }
-    // if (key == KEY_RIGHT)
-    // {   
-    //     return 3;
-    // }
-    // if (key == KEY_LEFT)
-    // {   
-    //     return 4;
-    // }
-    // if (key == 'q')
-    // {
-    //     return 'q';
-    // }
 }
 
 
-void NcScreen::printScreen(std::vector<sData> &playerData)
+void NcScreen::printScreen(std::vector<toScreen> &printObject)
 {
     clear();
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < printObject.size(); ++i)
     {
-        mvaddch(playerData[i].uX, playerData[i].uY, playerData[i].uSkin);
+        mvaddch(printObject[i].x, printObject[i].y, printObject[i].skin);
     }
     refresh();
 }
