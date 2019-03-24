@@ -51,12 +51,12 @@ int NcScreen::getInput()
 }
 
 
-void NcScreen::printScreen(std::vector<toScreen> &printObject)
+void NcScreen::printScreen(std::vector<unitBox> &units)
 {
     clear();
-    for (int i = 0; i < printObject.size(); ++i)
+    for (int i = 0; i < units.size(); ++i)
     {
-        mvaddch(printObject[i].x, printObject[i].y, printObject[i].skin);
+        mvaddch(units[i].x, units[i].y, units[i].skin);
     }
     refresh();
 }

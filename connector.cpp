@@ -38,10 +38,10 @@ void Connector::connectServer()
 }
 
 
-void Connector::syncData(char *sendBuf, char *recvBuf)
+void Connector::syncData(char *sendBuf, int sSize, char *recvBuf)
 {
 
-	send(sock, sendBuf, 1024, 0);	
+	send(sock, sendBuf, sSize + 2, 0);	
 
 	recv(sock, recvBuf, 1024, 0); 
  

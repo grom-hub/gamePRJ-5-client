@@ -14,7 +14,7 @@ public:
 	//Connector();
 	//~Connector();
 	void connectServer();
-	void syncData(char *sendBuf, char *recvBuf);
+	void syncData(char *sendBuf, int sSize, char *recvBuf);
 	void end();
 
 

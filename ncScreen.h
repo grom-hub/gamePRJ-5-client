@@ -12,13 +12,20 @@ struct toScreen
 	int y;
 };
 
+struct unitBox
+{
+    int id;
+    char skin;
+    int x;
+    int y;
+};
 
 
 class NcScreen
 {
 public:
 	void initNcScreen();
-	void printScreen(std::vector<toScreen> &printObject);
+	void printScreen(std::vector<unitBox> &units);
 	int getInput();
 	void exitNcScreen();
 
