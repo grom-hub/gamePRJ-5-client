@@ -25,7 +25,7 @@ class NcScreen
 {
 public:
 	void initNcScreen();
-	void printScreen(std::vector<unitBox> &units);
+	void printScreen(const std::vector<unitBox> &units);
 	int getInput();
 	void exitNcScreen();
 

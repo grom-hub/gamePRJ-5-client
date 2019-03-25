@@ -51,7 +51,7 @@ int NcScreen::getInput()
 }
 
 
-void NcScreen::printScreen(std::vector<unitBox> &units)
+void NcScreen::printScreen(const std::vector<unitBox> &units)
 {
     clear();
     for (int i = 0; i < units.size(); ++i)

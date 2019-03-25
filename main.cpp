@@ -57,22 +57,17 @@ int main(int args, char *argv[])
     Connector cn;
 
 
-
-
     cn.connectServer();
 
-    // Создать персонажа 
-    // (отправить на сервер команду создания персонажа и скин. Получить id.)
 
+// Создать игрока, получить id --------------
     createData.skin = 'A';
 
     sSize = sizeof(crtData);
     sendBuf[0] = 2;
     std::memcpy(&sendBuf[2], &createData, sSize);
 
-
     cn.syncData(sendBuf, sSize, recvBuf);
-
 
     if(recvBuf[0] == 4)
     {
@@ -81,8 +76,8 @@ int main(int args, char *argv[])
         std::memcpy(units.data(), &recvBuf[2], sizeof(unitBox) * rSize);
         myid = units[rSize].id;
     }
+// -----------------------------------------
 
-    //return 0;
 
     scr.initNcScreen();
 
