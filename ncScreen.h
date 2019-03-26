@@ -1,16 +1,9 @@
-//#pragma once
+#pragma once
 
 #include <vector>
 #include "connector.h" // sData
 
 
-
-struct toScreen
-{
-	char skin;
-	int x;
-	int y;
-};
 
 struct unitBox
 {

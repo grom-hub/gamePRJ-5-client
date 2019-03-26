@@ -22,17 +22,16 @@ int main(int args, char *argv[])
     int input;
     char sendBuf[1024];
     char recvBuf[1024];
-    std::vector<toScreen> printObject(5);
     int sSize;
     int rSize;
     std::vector<unitBox> units;
 
 
-    // if(args < 3)
-    // {
-    //     std::cout << "No args" << std::endl;
-    //     return 1;
-    // }
+    if(args < 2)
+    {
+        std::cout << "No args" << std::endl;
+        return 1;
+    }
 
     NcScreen scr;
     Connector cn;
@@ -41,7 +40,7 @@ int main(int args, char *argv[])
 
     cn.connectServer();
 
-    myid = ctrl.createPlayer(cn);
+    myid = ctrl.createPlayer(cn, *argv[1]);
 
     scr.initNcScreen();
 
@@ -53,36 +52,11 @@ int main(int args, char *argv[])
 
         input = scr.getInput();
 
-        // отправлять на сервер id, комманду.
-
-        if(input == 0)
-        {
-            sendBuf[0] = 1;
-            sSize = 1;
-        }
-
-        if(input != 0)
-        {
-            sendBuf[0] = 3;
-            sendBuf[1] = 4;
-            sendBuf[2] = myid;
-            sendBuf[3] = input;
-            sSize = 4;
-        }
+        ctrl.setCommand(input, myid, sendBuf, sSize);
 
         cn.syncData(sendBuf, sSize, recvBuf);
 
-        if(recvBuf[0] == 4)
-        {
-            if(rSize != recvBuf[1])
-            {
-                rSize = recvBuf[1];
-                units.resize(rSize);
-            }
-
-            std::memcpy(units.data(), &recvBuf[2], sizeof(unitBox) * rSize);
-        }
-
+        ctrl.recvBufHandler(recvBuf, rSize, units);
 
         scr.printScreen(units);
 
