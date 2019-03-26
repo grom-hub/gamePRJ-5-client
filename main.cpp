@@ -9,27 +9,10 @@
 
 #include "connector.h"
 #include "ncScreen.h"
+#include "playerController.h"
 
 
 // Типы буферов: 1 - пустой, 2 - создать персонажа, 3 - комманда персонажу от клиента, 4 - пакет персонажей от сервера
-
-
-struct sData
-{
-    int id;
-    int x;
-    int y;
-    char skin;
-    int command;
-};
-
-struct crtData
-{
-    int id;
-    char skin;
-};
-
-
 
 
 
@@ -40,8 +23,6 @@ int main(int args, char *argv[])
     char sendBuf[1024];
     char recvBuf[1024];
     std::vector<toScreen> printObject(5);
-    std::vector<sData> serverData(5);
-    crtData createData;
     int sSize;
     int rSize;
     std::vector<unitBox> units;
@@ -55,44 +36,39 @@ int main(int args, char *argv[])
 
     NcScreen scr;
     Connector cn;
+    PlayerController ctrl;
 
 
     cn.connectServer();
 
-
-// Создать игрока, получить id --------------
-    createData.skin = 'A';
-
-    sSize = sizeof(crtData);
-    sendBuf[0] = 2;
-    std::memcpy(&sendBuf[2], &createData, sSize);
-
-    cn.syncData(sendBuf, sSize, recvBuf);
-
-    if(recvBuf[0] == 4)
-    {
-        rSize = recvBuf[1];
-        units.resize(rSize);
-        std::memcpy(units.data(), &recvBuf[2], sizeof(unitBox) * rSize);
-        myid = units[rSize].id;
-    }
-// -----------------------------------------
-
+    myid = ctrl.createPlayer(cn);
 
     scr.initNcScreen();
 
 
-    while(input != 'q')
+    while (input != 'q')
     {
-    	usleep(100000);
+    	usleep(10000);
 
 
         input = scr.getInput();
 
         // отправлять на сервер id, комманду.
 
-        sendBuf[0] = 1;
-        sSize = 1;
+        if(input == 0)
+        {
+            sendBuf[0] = 1;
+            sSize = 1;
+        }
+
+        if(input != 0)
+        {
+            sendBuf[0] = 3;
+            sendBuf[1] = 4;
+            sendBuf[2] = myid;
+            sendBuf[3] = input;
+            sSize = 4;
+        }
 
         cn.syncData(sendBuf, sSize, recvBuf);
 
