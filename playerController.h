@@ -16,8 +16,8 @@ class PlayerController
 {
 public:
 	int createPlayer(Connector &cn, char skin);
-	void setCommand(int input, int myid, char *sendBuf, int &sSize);
-	void recvBufHandler(char *recvBuf, int &rSize, std::vector<unitBox> &units);
+	void setCommand(int input, int myid, char *sendBuff, int &sSize);
+	void recvBufHandler(char *recvBuff, int &rSize, std::vector<printData> &printObjects);
 
 
 

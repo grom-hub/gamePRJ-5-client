@@ -1,8 +1,9 @@
 //#include <ncurses.h>
-#include <unistd.h> // usleep()
 //#include <cstdlib> // rand(), srand(), exit()
 //#include <ctime> // time()
 //#include <string>
+
+#include <unistd.h> // usleep()
 #include <cstring> // std::memcpy()
 #include <iostream> // cout
 #include <vector>
@@ -20,11 +21,11 @@ int main(int args, char *argv[])
 {
     int myid;
     int input;
-    char sendBuf[1024];
-    char recvBuf[1024];
+    char sendBuff[1024];
+    char recvBuff[1024];
     int sSize;
     int rSize;
-    std::vector<unitBox> units;
+    std::vector<printData> printObjects;
 
 
     if(args < 2)
@@ -52,13 +53,13 @@ int main(int args, char *argv[])
 
         input = scr.getInput();
 
-        ctrl.setCommand(input, myid, sendBuf, sSize);
+        ctrl.setCommand(input, myid, sendBuff, sSize);
 
-        cn.syncData(sendBuf, sSize, recvBuf);
+        cn.syncData(sendBuff, sSize, recvBuff);
 
-        ctrl.recvBufHandler(recvBuf, rSize, units);
+        ctrl.recvBufHandler(recvBuff, rSize, printObjects);
 
-        scr.printScreen(units);
+        scr.printScreen(printObjects);
 
     }
 

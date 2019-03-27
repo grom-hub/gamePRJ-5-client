@@ -20,6 +20,7 @@ void NcScreen::initNcScreen()
     nodelay(stdscr, TRUE);
     clear();
     refresh();
+
 }
 
 
@@ -51,14 +52,17 @@ int NcScreen::getInput()
 }
 
 
-void NcScreen::printScreen(const std::vector<unitBox> &units)
+void NcScreen::printScreen(const std::vector<printData> &printObjects)
 {
     clear();
-    for (int i = 0; i < units.size(); ++i)
+    for (int i = 0; i < printObjects.size(); ++i)
     {
-        mvaddch(units[i].x, units[i].y, units[i].skin);
+        mvaddch(printObjects[i].x, printObjects[i].y, printObjects[i].skin);
     }
-    refresh();
+    mvaddstr(0, 1, "PWR = ");
+    mvaddstr(1, 1, "Status_2 = ");
+    //refresh();
+
 }
 
 
