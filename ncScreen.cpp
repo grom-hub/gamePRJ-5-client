@@ -52,7 +52,7 @@ int NcScreen::getInput()
 }
 
 
-void NcScreen::printScreen(const std::vector<printData> &printObjects)
+void NcScreen::printScreen(const std::vector<PrintData> &printObjects)
 {
     clear();
     for (int i = 0; i < printObjects.size(); ++i)

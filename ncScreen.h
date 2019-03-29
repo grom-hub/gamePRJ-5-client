@@ -6,15 +6,7 @@
 
 
 
-// struct unitBox
-// {
-//     int id;
-//     char skin;
-//     int x;
-//     int y;
-// };
-
-struct printData
+struct PrintData
 {
 	char skin;
 	int x;
@@ -26,7 +18,7 @@ class NcScreen
 {
 public:
 	void initNcScreen();
-	void printScreen(const std::vector<printData> &printObjects);
+	void printScreen(const std::vector<PrintData> &printObjects);
 	int getInput();
 	void exitNcScreen();
 

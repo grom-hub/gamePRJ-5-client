@@ -9,7 +9,7 @@ int PlayerController::createPlayer(Connector &cn, char skin)
 {
     createData.skin = skin;
 
-    int sSize = sizeof(crtData);
+    int sSize = sizeof(CrtData);
 
     char sendBuff[1024];
     char recvBuff[1024];
@@ -21,7 +21,7 @@ int PlayerController::createPlayer(Connector &cn, char skin)
 
     if(recvBuff[0] == 2)
     {    
-        std::memcpy(&createData, &recvBuff[2], sizeof(crtData));
+        std::memcpy(&createData, &recvBuff[2], sizeof(CrtData));
         return createData.id;
     }
 }
@@ -51,7 +51,7 @@ void PlayerController::setCommand(int input, int myid, char *sendBuff, int &sSiz
 
 
 
-void PlayerController::recvBufHandler(char *recvBuff, int &rSize, std::vector<printData> &printObjects)
+void PlayerController::recvBufHandler(char *recvBuff, int &rSize, std::vector<PrintData> &printObjects)
 {
 
     if(recvBuff[0] == 4)
@@ -62,7 +62,7 @@ void PlayerController::recvBufHandler(char *recvBuff, int &rSize, std::vector<pr
             printObjects.resize(rSize);
         }
 
-        std::memcpy(printObjects.data(), &recvBuff[2], sizeof(printData) * rSize);
+        std::memcpy(printObjects.data(), &recvBuff[2], sizeof(PrintData) * rSize);
     }
 
 

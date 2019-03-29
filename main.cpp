@@ -25,7 +25,7 @@ int main(int args, char *argv[])
     char recvBuff[1024];
     int sSize;
     int rSize;
-    std::vector<printData> printObjects;
+    std::vector<PrintData> printObjects;
 
 
     if(args < 2)
