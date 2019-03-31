@@ -19,15 +19,7 @@
 
 int main(int args, char *argv[])
 {
-    int myid = 0;
     int input = 0;
-    char sendBuff[1024];
-    char recvBuff[1024];
-    int sSize = 0;
-    int recvPrintSize = 0;
-    std::vector<PrintData> printObjects;
-    StatusData playerStatus;
-    bool updScreen = false;
 
 
     if(args < 2)
@@ -36,14 +28,16 @@ int main(int args, char *argv[])
         return 1;
     }
 
+
     NcScreen scr;
     Connector cn;
     PlayerController ctrl;
 
+    scr.refreshCount = 0;
 
     cn.connectServer();
 
-    myid = ctrl.createPlayer(cn, *argv[1]);
+    ctrl.createPlayer(cn, *argv[1]);
 
     scr.initNcScreen();
 
@@ -55,13 +49,13 @@ int main(int args, char *argv[])
 
         input = scr.getInput();
 
-        ctrl.setCommand(input, myid, sendBuff, sSize);
+        ctrl.setCommand(input, cn.sendBuff, cn.sendSize);
 
-        cn.syncData(sendBuff, sSize, recvBuff);
+        cn.syncData();
 
-        ctrl.recvBufHandler(recvBuff, recvPrintSize, printObjects, playerStatus, updScreen);
+        ctrl.recvBufHandler(cn.recvBuff, scr);
 
-        scr.printScreen(printObjects, playerStatus, updScreen);
+        scr.printScreen();
 
     }
 

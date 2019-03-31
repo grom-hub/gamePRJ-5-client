@@ -11,10 +11,14 @@
 class Connector
 {
 public:
+	char sendBuff[1024];
+    char recvBuff[1024];
+    int sendSize;
+
 	//Connector();
 	//~Connector();
 	void connectServer();
-	void syncData(char *sendBuf, int sSize, char *recvBuf);
+	void syncData();
 	void end();
 
 

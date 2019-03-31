@@ -16,14 +16,16 @@ struct CrtData
 class PlayerController
 {
 public:
-	int createPlayer(Connector &cn, char skin);
-	void setCommand(int input, int myid, char *sendBuff, int &sSize);
-	void recvBufHandler(char *recvBuff, int &recvPrintSize, std::vector<PrintData> &printObjects, StatusData &playerStatus, bool &updScreen);
+	void createPlayer(Connector &cn, char skin);
+	void setCommand(int input, char *sendBuff, int &sendSize);
+	void recvBufHandler(char *recvBuff, NcScreen &scr);
 
 
 
 
 private:
 	CrtData createData;
-	int oldFrameNum;
+	int recvPrintSize;
+	int clientFrameNum;
+	int myid;
 };

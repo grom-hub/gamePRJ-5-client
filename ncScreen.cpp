@@ -52,19 +52,21 @@ int NcScreen::getInput()
 }
 
 
-void NcScreen::printScreen(const std::vector<PrintData> &printObjects, StatusData &playerStatus, bool updScreen)
+void NcScreen::printScreen()
 {
 
     if(updScreen)
     {
+        updScreen = false;
+        refreshCount ++;
         clear();
         for (int i = 0; i < printObjects.size(); ++i)
         {
             mvaddch(printObjects[i].x, printObjects[i].y, printObjects[i].skin);
         }
 
-        mvprintw(0, 1, "PWR = %d", playerStatus.pwr);
-        mvprintw(1, 1, "Server frameNum = %d", playerStatus.frameNum);
+        mvprintw(0, 1, "PWR = %d", printStatus.pwr);
+        mvprintw(1, 1, "Refresh count = %d", refreshCount);
         //refresh();
     }
 

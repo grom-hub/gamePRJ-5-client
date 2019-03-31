@@ -6,14 +6,14 @@
 
 
 
-struct PrintData
+struct PrintObjectData
 {
 	char skin;
 	int x;
 	int y;
 };
 
-struct StatusData
+struct PrintStatusData
 {
 	int frameNum;
 	int pwr;
@@ -24,8 +24,13 @@ struct StatusData
 class NcScreen
 {
 public:
+	std::vector<PrintObjectData> printObjects;
+    PrintStatusData printStatus;
+    bool updScreen;
+	int refreshCount;
+
 	void initNcScreen();
-	void printScreen(const std::vector<PrintData> &printObjects, StatusData &playerStatus, bool updScreen);
+	void printScreen();
 	int getInput();
 	void exitNcScreen();
 
@@ -33,6 +38,5 @@ public:
 
 
 private:
-
 
 };

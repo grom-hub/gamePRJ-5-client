@@ -5,54 +5,40 @@
 
 
 
-int PlayerController::createPlayer(Connector &cn, char skin)
+void PlayerController::createPlayer(Connector &cn, char skin)
 {
     createData.skin = skin;
 
-    int sSize = sizeof(CrtData);
+    cn.sendSize = sizeof(CrtData);
 
-    char sendBuff[1024];
-    char recvBuff[1024];
+    cn.sendBuff[0] = 2;
+    std::memcpy(&cn.sendBuff[2], &createData, sizeof(CrtData));
 
-    sendBuff[0] = 2;
-    std::memcpy(&sendBuff[2], &createData, sSize);
+    cn.syncData();
 
-    cn.syncData(sendBuff, sSize, recvBuff);
-
-    if(recvBuff[0] == 2)
+    if(cn.recvBuff[0] == 2)
     {    
-        std::memcpy(&createData, &recvBuff[2], sizeof(CrtData));
-        return createData.id;
+        std::memcpy(&createData, &cn.recvBuff[2], sizeof(CrtData));
+        myid = createData.id;
     }
 }
 
 
 
-void PlayerController::setCommand(int input, int myid, char *sendBuff, int &sSize)
+void PlayerController::setCommand(int input, char *sendBuff, int &sendSize)
 {
-
-        if(input == 0)
-        {
-            sendBuff[0] = 1;
-            sendBuff[2] = myid;
-            sSize = 3;
-        }
-
-        // отправлять на сервер id, комманду.
-        if(input != 0)
-        {
-            sendBuff[0] = 3; // тип
-            sendBuff[1] = 4; // размер
-            sendBuff[2] = myid;
-            sendBuff[3] = input;
-            sSize = 4;
-        }
-
+    
+    sendBuff[0] = 3; // тип
+    sendBuff[1] = myid;
+    sendBuff[2] = input;
+    sendBuff[3] = clientFrameNum;
+    sendSize = 4 - 2;
+        
 }
 
 
 
-void PlayerController::recvBufHandler(char *recvBuff, int &recvPrintSize, std::vector<PrintData> &printObjects, StatusData &playerStatus, bool &updScreen)
+void PlayerController::recvBufHandler(char *recvBuff, NcScreen &scr)
 {
 
 
@@ -62,20 +48,15 @@ void PlayerController::recvBufHandler(char *recvBuff, int &recvPrintSize, std::v
         if(recvPrintSize != recvBuff[1])
         {
             recvPrintSize = recvBuff[1];
-            printObjects.resize(recvPrintSize);
+            scr.printObjects.resize(recvPrintSize);
         }
 
-        std::memcpy(printObjects.data(), &recvBuff[2], sizeof(PrintData) * recvPrintSize);
+        std::memcpy(scr.printObjects.data(), &recvBuff[3], sizeof(PrintObjectData) * recvPrintSize);
 
-        std::memcpy(&playerStatus, &recvBuff[sizeof(PrintData) * recvPrintSize + 2], sizeof(StatusData));   
+        std::memcpy(&scr.printStatus, &recvBuff[sizeof(PrintObjectData) * recvPrintSize + 3], sizeof(PrintStatusData));
 
-        if(playerStatus.frameNum == oldFrameNum)
-            updScreen = false;
-        else
-        {
-            updScreen = true;
-            oldFrameNum = playerStatus.frameNum;             
-        }
+        clientFrameNum = recvBuff[2];
+        scr.updScreen = true;
     }
 
 
