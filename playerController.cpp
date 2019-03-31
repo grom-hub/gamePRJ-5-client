@@ -1,5 +1,5 @@
+//#include <iostream>
 #include <cstring> // std::memcpy()
-
 #include "playerController.h"
 
 
@@ -34,14 +34,15 @@ void PlayerController::setCommand(int input, int myid, char *sendBuff, int &sSiz
         if(input == 0)
         {
             sendBuff[0] = 1;
-            sSize = 1;
+            sendBuff[2] = myid;
+            sSize = 3;
         }
 
         // отправлять на сервер id, комманду.
         if(input != 0)
         {
-            sendBuff[0] = 3;
-            sendBuff[1] = 4;
+            sendBuff[0] = 3; // тип
+            sendBuff[1] = 4; // размер
             sendBuff[2] = myid;
             sendBuff[3] = input;
             sSize = 4;
@@ -51,18 +52,30 @@ void PlayerController::setCommand(int input, int myid, char *sendBuff, int &sSiz
 
 
 
-void PlayerController::recvBufHandler(char *recvBuff, int &rSize, std::vector<PrintData> &printObjects)
+void PlayerController::recvBufHandler(char *recvBuff, int &recvPrintSize, std::vector<PrintData> &printObjects, StatusData &playerStatus, bool &updScreen)
 {
+
 
     if(recvBuff[0] == 4)
     {
-        if(rSize != recvBuff[1])
+
+        if(recvPrintSize != recvBuff[1])
         {
-            rSize = recvBuff[1];
-            printObjects.resize(rSize);
+            recvPrintSize = recvBuff[1];
+            printObjects.resize(recvPrintSize);
         }
 
-        std::memcpy(printObjects.data(), &recvBuff[2], sizeof(PrintData) * rSize);
+        std::memcpy(printObjects.data(), &recvBuff[2], sizeof(PrintData) * recvPrintSize);
+
+        std::memcpy(&playerStatus, &recvBuff[sizeof(PrintData) * recvPrintSize + 2], sizeof(StatusData));   
+
+        if(playerStatus.frameNum == oldFrameNum)
+            updScreen = false;
+        else
+        {
+            updScreen = true;
+            oldFrameNum = playerStatus.frameNum;             
+        }
     }
 
 

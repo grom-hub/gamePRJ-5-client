@@ -19,13 +19,15 @@
 
 int main(int args, char *argv[])
 {
-    int myid;
-    int input;
+    int myid = 0;
+    int input = 0;
     char sendBuff[1024];
     char recvBuff[1024];
-    int sSize;
-    int rSize;
+    int sSize = 0;
+    int recvPrintSize = 0;
     std::vector<PrintData> printObjects;
+    StatusData playerStatus;
+    bool updScreen = false;
 
 
     if(args < 2)
@@ -57,9 +59,9 @@ int main(int args, char *argv[])
 
         cn.syncData(sendBuff, sSize, recvBuff);
 
-        ctrl.recvBufHandler(recvBuff, rSize, printObjects);
+        ctrl.recvBufHandler(recvBuff, recvPrintSize, printObjects, playerStatus, updScreen);
 
-        scr.printScreen(printObjects);
+        scr.printScreen(printObjects, playerStatus, updScreen);
 
     }
 

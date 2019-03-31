@@ -2,7 +2,7 @@
 
 
 #include "connector.h"
-#include "ncScreen.h" // unitBox
+#include "ncScreen.h" // PrintData, StatusData
 
 
 struct CrtData
@@ -12,17 +12,18 @@ struct CrtData
 };
 
 
+
 class PlayerController
 {
 public:
 	int createPlayer(Connector &cn, char skin);
 	void setCommand(int input, int myid, char *sendBuff, int &sSize);
-	void recvBufHandler(char *recvBuff, int &rSize, std::vector<PrintData> &printObjects);
+	void recvBufHandler(char *recvBuff, int &recvPrintSize, std::vector<PrintData> &printObjects, StatusData &playerStatus, bool &updScreen);
 
 
 
 
 private:
 	CrtData createData;
-
+	int oldFrameNum;
 };

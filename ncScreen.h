@@ -2,7 +2,7 @@
 
 //#include <ncurses.h>
 #include <vector>
-#include "connector.h" // sData
+//#include "connector.h" 
 
 
 
@@ -13,12 +13,19 @@ struct PrintData
 	int y;
 };
 
+struct StatusData
+{
+	int frameNum;
+	int pwr;
+
+};
+
 
 class NcScreen
 {
 public:
 	void initNcScreen();
-	void printScreen(const std::vector<PrintData> &printObjects);
+	void printScreen(const std::vector<PrintData> &printObjects, StatusData &playerStatus, bool updScreen);
 	int getInput();
 	void exitNcScreen();
 
