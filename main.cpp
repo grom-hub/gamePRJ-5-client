@@ -2,10 +2,10 @@
 //#include <cstdlib> // rand(), srand(), exit()
 //#include <ctime> // time()
 //#include <string>
+//#include <cstring> // std::memcpy()
 
-#include <unistd.h> // usleep()
-#include <cstring> // std::memcpy()
 #include <iostream> // cout
+#include <unistd.h> // usleep()
 #include <vector>
 
 #include "connector.h"
@@ -13,7 +13,6 @@
 #include "playerController.h"
 
 
-// Типы буферов: 1 - пустой, 2 - создать персонажа, 3 - комманда персонажу от клиента, 4 - пакет персонажей от сервера
 
 
 
@@ -62,6 +61,7 @@ int main(int args, char *argv[])
 
     cn.end();
     scr.exitNcScreen();
+    //std::cout << ctrl.myid << std::endl;
 	return 0;
 }
 

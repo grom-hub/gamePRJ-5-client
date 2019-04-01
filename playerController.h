@@ -5,11 +5,6 @@
 #include "ncScreen.h" // PrintData, StatusData
 
 
-struct CrtData
-{
-    int id;
-    char skin;
-};
 
 
 
@@ -24,7 +19,6 @@ public:
 
 
 private:
-	CrtData createData;
 	int recvPrintSize;
 	int clientFrameNum;
 	int myid;

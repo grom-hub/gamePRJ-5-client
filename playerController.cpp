@@ -6,20 +6,16 @@
 
 
 void PlayerController::createPlayer(Connector &cn, char skin)
-{
-    createData.skin = skin;
-
-    cn.sendSize = sizeof(CrtData);
-
+{ 
     cn.sendBuff[0] = 2;
-    std::memcpy(&cn.sendBuff[2], &createData, sizeof(CrtData));
+    cn.sendBuff[1] = skin;
+    cn.sendSize = 2;
 
     cn.syncData();
 
     if(cn.recvBuff[0] == 2)
     {    
-        std::memcpy(&createData, &cn.recvBuff[2], sizeof(CrtData));
-        myid = createData.id;
+        myid = cn.recvBuff[1];
     }
 }
 
@@ -28,11 +24,11 @@ void PlayerController::createPlayer(Connector &cn, char skin)
 void PlayerController::setCommand(int input, char *sendBuff, int &sendSize)
 {
     
-    sendBuff[0] = 3; // тип
+    sendBuff[0] = 3;
     sendBuff[1] = myid;
     sendBuff[2] = input;
     sendBuff[3] = clientFrameNum;
-    sendSize = 4 - 2;
+    sendSize = 4;
         
 }
 

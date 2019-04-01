@@ -41,7 +41,7 @@ void Connector::connectServer()
 void Connector::syncData()
 {
 
-	send(sock, sendBuff, sendSize + 2, 0);	
+	send(sock, sendBuff, sendSize, 0);	
 
 	recv(sock, recvBuff, 1024, 0); 
  
