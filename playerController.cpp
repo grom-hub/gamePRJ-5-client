@@ -5,23 +5,23 @@
 
 
 
-void PlayerController::createPlayer(Connector &cn, char skin)
+void PlayerController::createPlayer(Connector &connect, int &myid, char skin)
 { 
-    cn.sendBuff[0] = 2;
-    cn.sendBuff[1] = skin;
-    cn.sendSize = 2;
+    connect.sendBuff[0] = 2;
+    connect.sendBuff[1] = skin;
+    connect.sendSize = 2;
 
-    cn.syncData();
+    connect.syncData();
 
-    if(cn.recvBuff[0] == 2)
+    if(connect.recvBuff[0] == 2)
     {    
-        myid = cn.recvBuff[1];
+        myid = connect.recvBuff[1];
     }
 }
 
 
 
-void PlayerController::setCommand(int input, char *sendBuff, int &sendSize)
+void PlayerController::setCommand(int input, int &myid, char *sendBuff, int &sendSize)
 {
     
     sendBuff[0] = 3;
@@ -34,7 +34,7 @@ void PlayerController::setCommand(int input, char *sendBuff, int &sendSize)
 
 
 
-void PlayerController::recvBufHandler(char *recvBuff, NcScreen &scr)
+void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
 {
 
 
@@ -44,15 +44,15 @@ void PlayerController::recvBufHandler(char *recvBuff, NcScreen &scr)
         if(recvPrintSize != recvBuff[1])
         {
             recvPrintSize = recvBuff[1];
-            scr.printObjects.resize(recvPrintSize);
+            screen.printObjects.resize(recvPrintSize);
         }
 
-        std::memcpy(scr.printObjects.data(), &recvBuff[3], sizeof(PrintObjectData) * recvPrintSize);
+        std::memcpy(screen.printObjects.data(), &recvBuff[3], sizeof(PrintObjectData) * recvPrintSize);
 
-        std::memcpy(&scr.printStatus, &recvBuff[sizeof(PrintObjectData) * recvPrintSize + 3], sizeof(PrintStatusData));
+        std::memcpy(&screen.printStatus, &recvBuff[sizeof(PrintObjectData) * recvPrintSize + 3], sizeof(PrintStatusData));
 
         clientFrameNum = recvBuff[2];
-        scr.updScreen = true;
+        screen.updScreen = true;
     }
 
 

@@ -19,6 +19,7 @@
 int main(int args, char *argv[])
 {
     int input = 0;
+    int myid;
 
 
     if(args < 2)
@@ -28,40 +29,40 @@ int main(int args, char *argv[])
     }
 
 
-    NcScreen scr;
-    Connector cn;
-    PlayerController ctrl;
+    NcScreen screen;
+    Connector connect;
+    PlayerController controller;
 
-    scr.refreshCount = 0;
+    screen.refreshCount = 0;
 
-    cn.connectServer();
+    connect.connectServer();
 
-    ctrl.createPlayer(cn, *argv[1]);
+    controller.createPlayer(connect, myid, *argv[1]);
 
-    scr.initNcScreen();
+    screen.initNcScreen();
 
 
-    while (input != 'q')
+    while (input != 9)
     {
     	usleep(10000);
 
 
-        input = scr.getInput();
+        input = screen.getInput();
 
-        ctrl.setCommand(input, cn.sendBuff, cn.sendSize);
+        controller.setCommand(input, myid, connect.sendBuff, connect.sendSize);
 
-        cn.syncData();
+        connect.syncData();
 
-        ctrl.recvBufHandler(cn.recvBuff, scr);
+        controller.recvBuffHandler(connect.recvBuff, screen);
 
-        scr.printScreen();
+        screen.printScreen(myid);
 
     }
 
 
-    cn.end();
-    scr.exitNcScreen();
-    //std::cout << ctrl.myid << std::endl;
+    connect.end();
+    screen.exitNcScreen();
+    //std::cout << controller.myid << std::endl;
 	return 0;
 }
 

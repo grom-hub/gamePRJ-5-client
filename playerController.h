@@ -11,9 +11,9 @@
 class PlayerController
 {
 public:
-	void createPlayer(Connector &cn, char skin);
-	void setCommand(int input, char *sendBuff, int &sendSize);
-	void recvBufHandler(char *recvBuff, NcScreen &scr);
+	void createPlayer(Connector &connect, int &myid, char skin);
+	void setCommand(int input, int &myid, char *sendBuff, int &sendSize);
+	void recvBuffHandler(char *recvBuff, NcScreen &screen);
 
 
 
@@ -21,5 +21,4 @@ public:
 private:
 	int recvPrintSize;
 	int clientFrameNum;
-	int myid;
 };

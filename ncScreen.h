@@ -9,16 +9,17 @@
 struct PrintObjectData
 {
 	char skin;
+	int id;
 	int x;
 	int y;
 };
 
 struct PrintStatusData
 {
-	int frameNum;
 	int pwr;
 
 };
+
 
 
 class NcScreen
@@ -30,13 +31,20 @@ public:
 	int refreshCount;
 
 	void initNcScreen();
-	void printScreen();
 	int getInput();
+	void printScreen(int &myid);
 	void exitNcScreen();
 
 
 
 
 private:
+	void setCam(int &myid);
+	int row;
+    int col;
+    int centerX;
+    int centerY;
+	int camX;
+	int camY;
 
 };
