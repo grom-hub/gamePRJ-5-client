@@ -37,9 +37,9 @@ void PlayerController::setCommand(int input, int &myid, char *sendBuff, int &sen
 void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
 {
 
-
     if(recvBuff[0] == 4)
     {
+        int copyBuffCounter;
 
         if(recvPrintSize != recvBuff[1])
         {
@@ -47,9 +47,11 @@ void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
             screen.printObjects.resize(recvPrintSize);
         }
 
-        std::memcpy(screen.printObjects.data(), &recvBuff[3], sizeof(PrintObjectData) * recvPrintSize);
 
-        std::memcpy(&screen.printStatus, &recvBuff[sizeof(PrintObjectData) * recvPrintSize + 3], sizeof(PrintStatusData));
+        copyBuffCounter = sizeof(PrintObjectData) * recvPrintSize;
+        std::memcpy(screen.printObjects.data(), &recvBuff[3], copyBuffCounter);
+
+        std::memcpy(&screen.printStatus, &recvBuff[copyBuffCounter + 3], sizeof(PrintStatusData));
 
         clientFrameNum = recvBuff[2];
         screen.updScreen = true;
