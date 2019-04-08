@@ -15,11 +15,13 @@
 
 
 
-
 int main(int args, char *argv[])
 {
     int input = 0;
     int myid;
+
+    // int fakeInput = 0;
+    // int fakeInputCounter = 0;
 
 
     if(args < 2)
@@ -62,7 +64,32 @@ int main(int args, char *argv[])
 
     connect.end();
     screen.exitNcScreen();
-    //std::cout << controller.myid << std::endl;
 	return 0;
 }
 
+
+
+
+
+
+
+//fakeInput = setFakeInput(*argv[2], fakeInputCounter, input);
+
+// int setFakeInput(char mode, int &counter, int trueInput)
+// {
+//     if(mode == '1')
+//     {
+//         counter ++;
+
+//         if(counter == 100)
+//             counter = 0;
+
+//         if(counter < 50)
+//             return 3;
+
+//         if(counter > 50)
+//             return 4;
+//     }
+//     else
+//         return trueInput;
+// }
