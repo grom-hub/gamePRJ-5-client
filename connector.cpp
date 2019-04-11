@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h> // inet_addr()
 
 #include <unistd.h>
 #include <iostream>
@@ -28,7 +29,8 @@ void Connector::connectServer()
 
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(3425);
-	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // INADDR_LOOPBACK - петля типа 127.0.0.1 (127.0.0.0/8).
+	//addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // INADDR_LOOPBACK - петля типа 127.0.0.1 (127.0.0.0/8).
+	addr.sin_addr.s_addr = inet_addr("192.168.0.78");
 
 	if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
