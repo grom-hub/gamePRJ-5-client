@@ -7,6 +7,7 @@
 #include <iostream> // cout
 #include <unistd.h> // usleep()
 #include <vector>
+#include <string>
 
 #include "connector.h"
 #include "ncScreen.h"
@@ -17,18 +18,25 @@
 
 int main(int args, char *argv[])
 {
-    int input = 0;
+
+    // char initSkin = 'A';
+    // std::string initPlanetSkin("<YO>");
+    //initPlanetSkin = *argv[2];
+    int command = 0;
     int myid;
 
+    CreateData createData;
+    createData.skin = 'A';
+    createData.planet = "<YO>";
     // int fakeInput = 0;
     // int fakeInputCounter = 0;
 
 
-    if(args < 2)
-    {
-        std::cout << "No args" << std::endl;
-        return 1;
-    }
+    // if(args < 2)
+    // {
+    //     std::cout << "No args" << std::endl;
+    //     return 1;
+    // }
 
 
     NcScreen screen;
@@ -39,21 +47,25 @@ int main(int args, char *argv[])
 
     connect.connectServer();
 
-    controller.createPlayer(connect, myid, *argv[1]);
 
     screen.initNcScreen();
 
+    command = screen.mainMenu(createData);
 
-    while (input != 9)
+    if(command != 9)
+        if(controller.createPlayer(connect, myid, createData) == 1)
+            command = 9;
+
+    while (command != 9)
     {
     	usleep(10000);
 
+        command = screen.getInput();
 
-        input = screen.getInput();
+        controller.setCommand(command, myid, connect.sendBuff, connect.sendSize);
 
-        controller.setCommand(input, myid, connect.sendBuff, connect.sendSize);
-
-        connect.syncData();
+        if(connect.syncData() == 1)
+            break;
 
         controller.recvBuffHandler(connect.recvBuff, screen);
 
@@ -62,8 +74,9 @@ int main(int args, char *argv[])
     }
 
 
-    connect.end();
     screen.exitNcScreen();
+    connect.end();
+    //std::cout << initPlanetSkin << std::endl;
 	return 0;
 }
 
@@ -73,7 +86,7 @@ int main(int args, char *argv[])
 
 
 
-//fakeInput = setFakeInput(*argv[2], fakeInputCounter, input);
+//fakeInput = setFakeInput(*argv[2], fakeInputCounter, command);
 
 // int setFakeInput(char mode, int &counter, int trueInput)
 // {

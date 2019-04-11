@@ -1,17 +1,26 @@
 //#include <iostream>
+//#include <algorithm> // std::reverse()
 #include <cstring> // std::memcpy()
 #include "playerController.h"
 
 
 
 
-void PlayerController::createPlayer(Connector &connect, int &myid, char skin)
+int PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
 { 
-    connect.sendBuff[0] = 2;
-    connect.sendBuff[1] = skin;
-    connect.sendSize = 2;
+    //std::reverse(createData.planet.begin(), createData.planet.end());
 
-    connect.syncData();
+    connect.sendBuff[0] = 2;
+
+    connect.sendBuff[1] = sizeof(char) * createData.planet.size();
+
+    connect.sendBuff[2] = createData.skin;    
+
+    std::memcpy(&connect.sendBuff[3], createData.planet.data(), sizeof(char) * createData.planet.size());
+    connect.sendSize = sizeof(char) * createData.planet.size() + 3;
+
+    if(connect.syncData() == 1) // Выход в случае потери соединения
+        return 1;
 
     if(connect.recvBuff[0] == 2)
     {    
@@ -27,8 +36,11 @@ void PlayerController::setCommand(int input, int &myid, char *sendBuff, int &sen
     sendBuff[0] = 3;
     sendBuff[1] = myid;
     sendBuff[2] = input;
-    sendBuff[3] = clientFrameNum;
-    sendSize = 4;
+    sendBuff[3] = unitsFrameNum;
+    sendBuff[4] = pwrPointsFrameNum;
+    sendBuff[5] = starsFrameNum;
+
+    sendSize = 6;
         
 }
 
@@ -37,25 +49,90 @@ void PlayerController::setCommand(int input, int &myid, char *sendBuff, int &sen
 void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
 {
 
+    
     if(recvBuff[0] == 4)
     {
-        int copyBuffCounter;
+        screen.updScreen = true;
 
-        if(recvPrintSize != recvBuff[1])
+        int buffCarriage = 0;
+
+        unitsFrameNum = recvBuff[1];
+        pwrPointsFrameNum = recvBuff[2];
+        starsFrameNum = recvBuff[3];
+
+
+
+        std::memcpy(&vectorSize, &recvBuff[4], sizeof(int) * 3);
+        buffCarriage = sizeof(int) * 3 + 4;
+
+        if(vectorSize[0] != 0)
         {
-            recvPrintSize = recvBuff[1];
-            screen.printObjects.resize(recvPrintSize);
+            screen.printUnits.resize(vectorSize[0]);
+
+            std::memcpy(screen.printUnits.data(), &recvBuff[buffCarriage], sizeof(PrintData) * vectorSize[0]);
+            buffCarriage += sizeof(PrintData) * vectorSize[0];
+        }
+
+        
+        if(vectorSize[1] != 0)
+        {
+            screen.printPwrPoints.resize(vectorSize[1]);
+
+            std::memcpy(screen.printPwrPoints.data(), &recvBuff[buffCarriage], sizeof(PrintData) * vectorSize[1]);
+            buffCarriage += sizeof(PrintData) * vectorSize[1];
+
+            std::memcpy(&screen.printStatus, &recvBuff[buffCarriage], sizeof(PrintStatusData));
+            buffCarriage += sizeof(PrintStatusData);
         }
 
 
-        copyBuffCounter = sizeof(PrintObjectData) * recvPrintSize;
-        std::memcpy(screen.printObjects.data(), &recvBuff[3], copyBuffCounter);
+        if(vectorSize[2] != 0)
+        {
+            screen.printStars.resize(vectorSize[2]);
 
-        std::memcpy(&screen.printStatus, &recvBuff[copyBuffCounter + 3], sizeof(PrintStatusData));
-
-        clientFrameNum = recvBuff[2];
-        screen.updScreen = true;
+            std::memcpy(screen.printStars.data(), &recvBuff[buffCarriage], sizeof(PrintData) * vectorSize[2]);
+            buffCarriage += sizeof(PrintData) * vectorSize[2];
+        }
     }
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// if(recvBuff[0] == 4)
+//     {
+//         int copyBuffCounter;
+
+//         if(recvPrintSize != recvBuff[1])
+//         {
+//             recvPrintSize = recvBuff[1];
+//             screen.printObjects.resize(recvPrintSize);
+//         }
+
+
+//         copyBuffCounter = sizeof(PrintObjectData) * recvPrintSize;
+//         std::memcpy(screen.printObjects.data(), &recvBuff[3], copyBuffCounter);
+
+//         std::memcpy(&screen.printStatus, &recvBuff[copyBuffCounter + 3], sizeof(PrintStatusData));
+
+//         clientFrameNum = recvBuff[2];
+
+//         // unitsFrameNum = recvBuff[2];
+//         // pwrPointsFrameNum = recvBuff[3];
+//         // starsFrameNum = recvBuff[4];
+
+//         screen.updScreen = true;
+//     }

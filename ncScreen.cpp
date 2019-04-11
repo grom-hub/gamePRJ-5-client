@@ -14,13 +14,74 @@ void NcScreen::initNcScreen()
         fprintf(stderr, "Error initialising ncurses.\n");
         exit(1);
     }
-    noecho();
     curs_set(0);
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
     clear();
     refresh();
 
+}
+
+
+
+int NcScreen::mainMenu(CreateData &createData)
+{
+    int key;
+    char input[80]; 
+    int cursPos = 1;
+
+    nodelay(stdscr, FALSE);
+
+
+    while(true)
+    {
+        getmaxyx(stdscr, row, col);
+
+        clear();
+        mvaddstr(row / 2 - 1, col / 4, " Start");
+        mvaddstr(row / 2, col / 4, " Unit skin = ");
+        addch(createData.skin);
+        mvaddstr(row / 2 + 1, col / 4, " Planet skin = ");
+        addstr(createData.planet.c_str());
+        mvaddstr(row / 2 + 2, col / 4, " Exit");
+        mvaddch(row / 2 - 2 + cursPos, col / 4 - 2, '>');
+
+        key = getch();
+
+        if(key == KEY_DOWN) cursPos ++;
+        if(key == KEY_UP) cursPos --;
+
+        if(cursPos < 1) cursPos = 4;
+        if(cursPos > 4) cursPos = 1;
+
+        if(key == '\n' && cursPos == 1)
+        {
+            nodelay(stdscr, TRUE);
+            noecho();
+            return 0;
+        }
+
+        if(key == '\n' && cursPos == 2)
+        {
+            clear();
+            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter player skin (One latter): ");
+            getstr (input);
+            createData.skin = input[0];
+        }
+
+        if(key == '\n' && cursPos == 3)
+        {
+            clear();
+            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter planet skin: ");
+            getstr (input);
+            createData.planet = input; // TEST!
+        }
+
+        if(key == '\n' && cursPos == 4)
+            return 9;
+        if(key == 'q')
+            return 9;
+    }
 }
 
 
@@ -43,6 +104,9 @@ int NcScreen::getInput()
         case KEY_LEFT:
             return 4;
             break;
+        case ' ':
+            return 5;
+            break;
         case 'q':
             return 9;
             break;
@@ -60,18 +124,29 @@ void NcScreen::printScreen(int &myid)
     if(updScreen)
     {
         updScreen = false;
-        // refreshCount ++;
+        //refreshCount ++;
 
         setCam(myid);
 
         clear();
-        for (int i = 0; i < printObjects.size(); ++i)
+
+        for (int i = 0; i < printStars.size(); ++i)
         {
-            mvaddch(printObjects[i].x + camX, printObjects[i].y + camY, printObjects[i].skin);
+            mvaddch(printStars[i].x + camX, printStars[i].y + camY, printStars[i].skin);
+        }
+
+        for (int i = 0; i < printPwrPoints.size(); ++i)
+        {
+            mvaddch(printPwrPoints[i].x + camX, printPwrPoints[i].y + camY, printPwrPoints[i].skin);
+        }
+
+        for (int i = 0; i < printUnits.size(); ++i)
+        {
+            mvaddch(printUnits[i].x + camX, printUnits[i].y + camY, printUnits[i].skin);
         }
 
         mvprintw(0, 1, "PWR = %d", printStatus.pwr);
-        // mvprintw(1, 1, "Refresh count = %d", refreshCount);
+        //mvprintw(1, 1, "Refresh count = %d", refreshCount);
         //refresh();
     }
 
@@ -85,12 +160,12 @@ void NcScreen::setCam(int &myid)
     centerY = col / 2;
     centerX = row / 2;
 
-    for(int i = 0; i < printObjects.size(); ++i)
+    for(int i = 0; i < printUnits.size(); ++i)
     {
-        if(printObjects[i].id == myid)
+        if(printUnits[i].id == myid)
         {
-            camX = centerX - printObjects[i].x;
-            camY = centerY - printObjects[i].y;
+            camX = centerX - printUnits[i].x;
+            camY = centerY - printUnits[i].y;
             break;
         }
     }

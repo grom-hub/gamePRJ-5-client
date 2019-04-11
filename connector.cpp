@@ -38,20 +38,27 @@ void Connector::connectServer()
 }
 
 
-void Connector::syncData()
+int Connector::syncData()
 {
 
 	send(sock, sendBuff, sendSize, 0);	
 
-	recv(sock, recvBuff, 1024, 0); 
- 
+	bytesRead = recv(sock, recvBuff, 102400, 0);
+
+	if(bytesRead <= 0) // Выход при потере соединения
+		return 1;
+	if(bytesRead > 100000) // Защита от переполнения буфера
+		return 1;
+
+
+ 	return 0;
 }
 
 
 void Connector::end()
 {
 	if(close(sock) == 0)
-	    std::cout << "Close - OK" << std::endl;
+	    std::cout << "Disconnect. Socket close - ok." << std::endl;
 }
 
 

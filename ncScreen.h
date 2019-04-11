@@ -2,11 +2,18 @@
 
 //#include <ncurses.h>
 #include <vector>
+#include <string>
 //#include "connector.h" 
+//#include "playerController.h" // CreateData
 
 
+struct CreateData
+{
+	char skin;
+	std::string planet;
+};
 
-struct PrintObjectData
+struct PrintData
 {
 	char skin;
 	int id;
@@ -17,7 +24,6 @@ struct PrintObjectData
 struct PrintStatusData
 {
 	int pwr;
-
 };
 
 
@@ -25,12 +31,16 @@ struct PrintStatusData
 class NcScreen
 {
 public:
-	std::vector<PrintObjectData> printObjects;
+	std::vector<PrintData> printUnits;
+	std::vector<PrintData> printPwrPoints;
+	std::vector<PrintData> printStars;
     PrintStatusData printStatus;
+    
     bool updScreen;
 	int refreshCount;
 
 	void initNcScreen();
+	int mainMenu(CreateData &createData);
 	int getInput();
 	void printScreen(int &myid);
 	void exitNcScreen();
