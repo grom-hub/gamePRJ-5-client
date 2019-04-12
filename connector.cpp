@@ -38,7 +38,8 @@ int Connector::connectServer(int gameMode)
 
 	if(gameMode == 2)
 	{
-		return 1;
+		addr.sin_addr.s_addr = inet_addr("192.168.1.69");
+		addr.sin_port = htons(3425);
 	}
 
 
