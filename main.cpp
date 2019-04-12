@@ -24,6 +24,7 @@ int main(int args, char *argv[])
     //initPlanetSkin = *argv[2];
     int command = 0;
     int myid;
+    int gameMode = 1;
 
     CreateData createData;
     createData.skin = 'A';
@@ -43,18 +44,18 @@ int main(int args, char *argv[])
     Connector connect;
     PlayerController controller;
 
-    screen.refreshCount = 0;
-
-    connect.connectServer();
+    //screen.refreshCount = 0;
 
 
     screen.initNcScreen();
 
-    command = screen.mainMenu(createData);
+    command = screen.mainMenu(createData, gameMode);
+
+    if(connect.connectServer(gameMode) == 1)
+        command = 9;
 
     if(command != 9)
-        if(controller.createPlayer(connect, myid, createData) == 1)
-            command = 9;
+        controller.createPlayer(connect, myid, createData);
 
     while (command != 9)
     {

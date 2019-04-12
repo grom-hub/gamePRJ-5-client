@@ -16,27 +16,39 @@
 
 
 
-void Connector::connectServer()
+int Connector::connectServer(int gameMode)
 {
 	
 	sock = socket(AF_INET, SOCK_STREAM, 0); // Префикс AF означает "address family" - "семейство адресов".
 	                                        // SOCK_STREAM - (TCP) способ передачи данных по сети.
 	if(sock < 0)
 	{
-	    perror("socket");
-	    exit(1);
+	    // perror("socket");
+	    // exit(1);
+	    return 1;
 	}
 
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(3425);
 	//addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // INADDR_LOOPBACK - петля типа 127.0.0.1 (127.0.0.0/8).
-	addr.sin_addr.s_addr = inet_addr("192.168.0.78");
+	if(gameMode == 1)
+	{
+		addr.sin_addr.s_addr = inet_addr("192.168.0.78");
+		addr.sin_port = htons(3425);
+	}
+
+	if(gameMode == 2)
+	{
+		return 1;
+	}
+
 
 	if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
-	    perror("connect");
-	    exit(2);
+	    // perror("connect");
+	    // exit(2);
+	    return 1;
 	}
+	return 0;
 }
 
 

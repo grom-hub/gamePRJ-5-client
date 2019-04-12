@@ -7,6 +7,12 @@
 
 
 
+NcScreen::NcScreen()
+{
+    clientVersion = 0.1;
+}
+
+
 void NcScreen::initNcScreen()
 {
 	if (!initscr())
@@ -24,11 +30,11 @@ void NcScreen::initNcScreen()
 
 
 
-int NcScreen::mainMenu(CreateData &createData)
+int NcScreen::mainMenu(CreateData &createData, int &gameMode)
 {
     int key;
     char input[80]; 
-    int cursPos = 1;
+    int cursPos = 0;
 
     nodelay(stdscr, FALSE);
 
@@ -38,43 +44,97 @@ int NcScreen::mainMenu(CreateData &createData)
         getmaxyx(stdscr, row, col);
 
         clear();
-        mvaddstr(row / 2 - 1, col / 4, " Start");
-        mvaddstr(row / 2, col / 4, " Unit skin = ");
+        mvaddstr(row / 2 - 2, col / 4, " Start");
+        mvaddstr(row / 2 - 1, col / 4, " Skin = ");
         addch(createData.skin);
-        mvaddstr(row / 2 + 1, col / 4, " Planet skin = ");
+        mvaddstr(row / 2 - 0, col / 4, " Tag = ");
         addstr(createData.planet.c_str());
+        mvaddstr(row / 2 + 1, col / 4, " Game mode = ");
+        printw("%d", gameMode);
         mvaddstr(row / 2 + 2, col / 4, " Exit");
         mvaddch(row / 2 - 2 + cursPos, col / 4 - 2, '>');
+
+        mvprintw(0, 1, "Ver %.2f", clientVersion);
+        mvaddstr(row - 3, 1, "In game controls:");
+        mvaddstr(row - 2, 1, "space = make tag (One point required)");
+        mvaddstr(row - 1, 1, "q = exit");
 
         key = getch();
 
         if(key == KEY_DOWN) cursPos ++;
         if(key == KEY_UP) cursPos --;
 
-        if(cursPos < 1) cursPos = 4;
-        if(cursPos > 4) cursPos = 1;
+        if(cursPos < 0) cursPos = 4;
+        if(cursPos > 4) cursPos = 0;
 
-        if(key == '\n' && cursPos == 1)
+        if(key == '\n' && cursPos == 0)
         {
             nodelay(stdscr, TRUE);
             noecho();
             return 0;
         }
 
-        if(key == '\n' && cursPos == 2)
+        if(key == '\n' && cursPos == 1)
         {
             clear();
-            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter player skin (One latter): ");
+            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your skin (One latter): ");
             getstr (input);
             createData.skin = input[0];
         }
 
-        if(key == '\n' && cursPos == 3)
+        if(key == '\n' && cursPos == 2)
         {
             clear();
-            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter planet skin: ");
+            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your tag: ");
             getstr (input);
-            createData.planet = input; // TEST!
+            createData.planet = input;
+        }
+
+        if(key == '\n' && cursPos == 3)
+        {
+            while(true)
+            {
+                clear();
+                mvaddstr(row / 2 - 2, col / 4, "- Select game mode -");
+                mvaddstr(row / 2 - 0, col / 4, " Mode 1");
+                mvaddstr(row / 2 + 1, col / 4, " Mode 2");
+                mvaddstr(row / 2 + 2, col / 4, " Back");
+                mvaddch(row / 2 - 2 + cursPos, col / 4 - 2, '>');
+
+                key = getch();
+
+                if(key == KEY_DOWN) cursPos ++;
+                if(key == KEY_UP) cursPos --;
+
+                if(cursPos < 2) cursPos = 4;
+                if(cursPos > 4) cursPos = 2;
+
+                if(key == '\n' && cursPos == 2)
+                {
+                    gameMode = 1;
+                    key = 0;
+                    break;
+                }
+
+                if(key == '\n' && cursPos == 3)
+                {
+                    gameMode = 2;
+                    key = 0;
+                    break;
+                }
+
+                if(key == '\n' && cursPos == 4)
+                {
+                    key = 0;
+                    break;
+                }
+                if(key == 'q')
+                {
+                    key = 0;
+                    break;
+                }
+            }
+  
         }
 
         if(key == '\n' && cursPos == 4)
@@ -145,7 +205,7 @@ void NcScreen::printScreen(int &myid)
             mvaddch(printUnits[i].x + camX, printUnits[i].y + camY, printUnits[i].skin);
         }
 
-        mvprintw(0, 1, "PWR = %d", printStatus.pwr);
+        mvprintw(0, 1, "Points = %d", printStatus.pwr);
         //mvprintw(1, 1, "Refresh count = %d", refreshCount);
         //refresh();
     }

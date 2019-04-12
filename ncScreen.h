@@ -39,8 +39,9 @@ public:
     bool updScreen;
 	int refreshCount;
 
+	NcScreen();
 	void initNcScreen();
-	int mainMenu(CreateData &createData);
+	int mainMenu(CreateData &createData, int &gameMode);
 	int getInput();
 	void printScreen(int &myid);
 	void exitNcScreen();
@@ -49,6 +50,7 @@ public:
 
 
 private:
+	float clientVersion;
 	void setCam(int &myid);
 	int row;
     int col;

@@ -6,7 +6,15 @@
 
 
 
-int PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
+PlayerController::PlayerController()
+{
+    unitsFrameNum = 0;
+    pwrPointsFrameNum = 0;
+    starsFrameNum = 0;
+}
+
+
+void PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
 { 
     //std::reverse(createData.planet.begin(), createData.planet.end());
 
@@ -19,8 +27,7 @@ int PlayerController::createPlayer(Connector &connect, int &myid, CreateData &cr
     std::memcpy(&connect.sendBuff[3], createData.planet.data(), sizeof(char) * createData.planet.size());
     connect.sendSize = sizeof(char) * createData.planet.size() + 3;
 
-    if(connect.syncData() == 1) // Выход в случае потери соединения
-        return 1;
+    connect.syncData();
 
     if(connect.recvBuff[0] == 2)
     {    

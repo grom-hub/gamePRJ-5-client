@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 
 #include <vector>
+//#include <string>
 
 
 
@@ -17,7 +18,7 @@ public:
 
 	//Connector();
 	//~Connector();
-	void connectServer();
+	int connectServer(int gameMode);
 	int syncData();
 	void end();
 

@@ -11,7 +11,8 @@
 class PlayerController
 {
 public:
-	int createPlayer(Connector &connect, int &myid, CreateData &createData);
+	PlayerController();
+	void createPlayer(Connector &connect, int &myid, CreateData &createData);
 	void setCommand(int input, int &myid, char *sendBuff, int &sendSize);
 	void recvBuffHandler(char *recvBuff, NcScreen &screen);
 
