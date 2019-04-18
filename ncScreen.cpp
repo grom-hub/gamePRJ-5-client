@@ -9,7 +9,7 @@
 
 NcScreen::NcScreen()
 {
-    clientVersion = 0.1;
+    clientVersion = 0.2;
 }
 
 
@@ -33,7 +33,7 @@ void NcScreen::initNcScreen()
 int NcScreen::mainMenu(CreateData &createData, int &gameMode)
 {
     int key;
-    char input[80]; 
+    char input[10]; 
     int cursPos = 0;
 
     nodelay(stdscr, FALSE);
@@ -48,7 +48,7 @@ int NcScreen::mainMenu(CreateData &createData, int &gameMode)
         mvaddstr(row / 2 - 1, col / 4, " Skin = ");
         addch(createData.skin);
         mvaddstr(row / 2 - 0, col / 4, " Tag = ");
-        addstr(createData.planet.c_str());
+        addstr(createData.tag.c_str());
         mvaddstr(row / 2 + 1, col / 4, " Game mode = ");
         printw("%d", gameMode);
         mvaddstr(row / 2 + 2, col / 4, " Exit");
@@ -77,8 +77,8 @@ int NcScreen::mainMenu(CreateData &createData, int &gameMode)
         if(key == '\n' && cursPos == 1)
         {
             clear();
-            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your skin (One latter): ");
-            getstr (input);
+            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your skin: ");
+            getnstr (input, 1);
             createData.skin = input[0];
         }
 
@@ -86,8 +86,8 @@ int NcScreen::mainMenu(CreateData &createData, int &gameMode)
         {
             clear();
             mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your tag: ");
-            getstr (input);
-            createData.planet = input;
+            getnstr (input, 20);
+            createData.tag = input;
         }
 
         if(key == '\n' && cursPos == 3)
@@ -178,7 +178,7 @@ int NcScreen::getInput()
 
 
 
-void NcScreen::printScreen(int &myid)
+void NcScreen::printScreen(int &myid, int &pbCount)
 {
 
     if(updScreen)
@@ -206,6 +206,7 @@ void NcScreen::printScreen(int &myid)
         }
 
         mvprintw(0, 1, "Points = %d", printStatus.pwr);
+        mvprintw(1, 1, "Package build count = %d", pbCount);
         //mvprintw(1, 1, "Refresh count = %d", refreshCount);
         //refresh();
     }

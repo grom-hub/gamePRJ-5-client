@@ -24,6 +24,6 @@ private:
     int pwrPointsFrameNum;
     int starsFrameNum;
 
-	int vectorSize[3];
+	int printObjectsSize[3];
 
 };

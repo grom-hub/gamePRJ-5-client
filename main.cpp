@@ -19,25 +19,15 @@
 int main(int args, char *argv[])
 {
 
-    // char initSkin = 'A';
-    // std::string initPlanetSkin("<YO>");
-    //initPlanetSkin = *argv[2];
     int command = 0;
     int myid;
     int gameMode = 1;
 
     CreateData createData;
     createData.skin = 'A';
-    createData.planet = "<YO>";
+    createData.tag = "<YO>";
     // int fakeInput = 0;
     // int fakeInputCounter = 0;
-
-
-    // if(args < 2)
-    // {
-    //     std::cout << "No args" << std::endl;
-    //     return 1;
-    // }
 
 
     NcScreen screen;
@@ -70,7 +60,7 @@ int main(int args, char *argv[])
 
         controller.recvBuffHandler(connect.recvBuff, screen);
 
-        screen.printScreen(myid);
+        screen.printScreen(myid, connect.pbCount);
 
     }
 

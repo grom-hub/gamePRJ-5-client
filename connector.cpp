@@ -9,10 +9,17 @@
 //#include <cstdlib>
 //#include <cstdio>
 #include <vector>
+#include <cstring> // std::memcpy()
+#include <unistd.h> // usleep()
 
 #include "connector.h"
 
 
+
+Connector::Connector()
+{
+	pbCount = 10;
+}
 
 
 
@@ -56,18 +63,44 @@ int Connector::connectServer(int gameMode)
 int Connector::syncData()
 {
 
-	send(sock, sendBuff, sendSize, 0);	
+// Отправка
 
-	bytesRead = recv(sock, recvBuff, 102400, 0);
+	send(sock, sendBuff, sendSize, 0);
+
+
+// Получение 
+
+	bytesRead = recv(sock, recvPreBuff, 102400, 0);
 
 	if(bytesRead <= 0) // Выход при потере соединения
 		return 1;
-	if(bytesRead > 100000) // Защита от переполнения буфера
-		return 1;
 
+	std::memcpy(&targetRecvSize, &recvPreBuff, sizeof(int));
+
+	std::memcpy(&recvBuff, &recvPreBuff[sizeof(int)], bytesRead - sizeof(int));
+
+	totalBytesRead = bytesRead - sizeof(int);
+
+
+	while(totalBytesRead != targetRecvSize)
+	{
+		usleep(1000);
+
+		pbCount ++;
+
+		bytesRead = recv(sock, recvPreBuff, 102400, 0);
+
+		if(bytesRead <= 0) // Выход при потере соединения
+			return 1;
+
+		std::memcpy(&recvBuff[totalBytesRead], &recvPreBuff, bytesRead);
+
+		totalBytesRead += bytesRead;
+	}
 
  	return 0;
 }
+
 
 
 void Connector::end()
@@ -76,58 +109,3 @@ void Connector::end()
 	    std::cout << "Disconnect. Socket close - ok." << std::endl;
 }
 
-
-
-
-
-//------
-//primer 
-
-// mData dt;
-// dt.x = 1;
-// dt.y = 2;
-
-// buf[0] = 1;
-// std::memcpy(&buf[1], &dt, sizeof(mData)); 
-// send(sock, buf, sizeof(mData) + 1, 0);
-
-
-
-// recv(sock, buf, 1024, 0);  
-
-// if (buf[0] == 1)
-// {
-//     std::memcpy(&dt, &buf[1], sizeof(mData)); 
-// }
-//------
-
-
-
-//------
-// if(connectorData.command == 0)
-// 	{
-// 		buf[0] = 1;
-
-// 		send(sock, buf, 1, 0);
-// 	}
-// 	else
-// 	{
-// 		buf[0] = 2;
-
-// 		std::memcpy(&buf[1], &connectorData, sizeof(sData)); 
-
-// 		send(sock, buf, sizeof(sData) + 1, 0);
-
-// 	}
-
-
-// 	//connectorData.command = 0;
-	
-
-// 	recv(sock, buf, 1024, 0); 
-
-// 	if (buf[0] == 2)
-// 	{
-// 	    std::memcpy(&serverData, &buf[1], sizeof(sData) * 5); 
-// 	}
-//-------

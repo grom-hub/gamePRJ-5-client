@@ -10,7 +10,7 @@
 struct CreateData
 {
 	char skin;
-	std::string planet;
+	std::string tag;
 };
 
 struct PrintData
@@ -43,7 +43,7 @@ public:
 	void initNcScreen();
 	int mainMenu(CreateData &createData, int &gameMode);
 	int getInput();
-	void printScreen(int &myid);
+	void printScreen(int &myid, int &pbCount);
 	void exitNcScreen();
 
 

@@ -14,9 +14,12 @@ class Connector
 public:
 	char sendBuff[1024];
     char recvBuff[102400];
+    char recvPreBuff[102400];
     int sendSize;
 
-	//Connector();
+    int pbCount;
+
+	Connector();
 	//~Connector();
 	int connectServer(int gameMode);
 	int syncData();
@@ -29,8 +32,9 @@ private:
 	int sock;
 	struct sockaddr_in addr;
 	int bytesRead;
-	//char buf[1024];
 
+	int targetRecvSize;
+	int totalBytesRead;
 
 
 };

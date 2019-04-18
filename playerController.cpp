@@ -16,16 +16,16 @@ PlayerController::PlayerController()
 
 void PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
 { 
-    //std::reverse(createData.planet.begin(), createData.planet.end());
+    //std::reverse(createData.tag.begin(), createData.tag.end());
 
     connect.sendBuff[0] = 2;
 
-    connect.sendBuff[1] = sizeof(char) * createData.planet.size();
+    connect.sendBuff[1] = sizeof(char) * createData.tag.size();
 
     connect.sendBuff[2] = createData.skin;    
 
-    std::memcpy(&connect.sendBuff[3], createData.planet.data(), sizeof(char) * createData.planet.size());
-    connect.sendSize = sizeof(char) * createData.planet.size() + 3;
+    std::memcpy(&connect.sendBuff[3], createData.tag.data(), sizeof(char) * createData.tag.size());
+    connect.sendSize = sizeof(char) * createData.tag.size() + 3;
 
     connect.syncData();
 
@@ -68,37 +68,36 @@ void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
         starsFrameNum = recvBuff[3];
 
 
-
-        std::memcpy(&vectorSize, &recvBuff[4], sizeof(int) * 3);
+        std::memcpy(&printObjectsSize, &recvBuff[4], sizeof(int) * 3);
         buffCarriage = sizeof(int) * 3 + 4;
 
-        if(vectorSize[0] != 0)
+        if(printObjectsSize[0] != 0)
         {
-            screen.printUnits.resize(vectorSize[0]);
+            screen.printUnits.resize(printObjectsSize[0]);
 
-            std::memcpy(screen.printUnits.data(), &recvBuff[buffCarriage], sizeof(PrintData) * vectorSize[0]);
-            buffCarriage += sizeof(PrintData) * vectorSize[0];
+            std::memcpy(screen.printUnits.data(), &recvBuff[buffCarriage], sizeof(PrintData) * printObjectsSize[0]);
+            buffCarriage += sizeof(PrintData) * printObjectsSize[0];
         }
 
         
-        if(vectorSize[1] != 0)
+        if(printObjectsSize[1] != 0)
         {
-            screen.printPwrPoints.resize(vectorSize[1]);
+            screen.printPwrPoints.resize(printObjectsSize[1]);
 
-            std::memcpy(screen.printPwrPoints.data(), &recvBuff[buffCarriage], sizeof(PrintData) * vectorSize[1]);
-            buffCarriage += sizeof(PrintData) * vectorSize[1];
+            std::memcpy(screen.printPwrPoints.data(), &recvBuff[buffCarriage], sizeof(PrintData) * printObjectsSize[1]);
+            buffCarriage += sizeof(PrintData) * printObjectsSize[1];
 
             std::memcpy(&screen.printStatus, &recvBuff[buffCarriage], sizeof(PrintStatusData));
             buffCarriage += sizeof(PrintStatusData);
         }
 
 
-        if(vectorSize[2] != 0)
+        if(printObjectsSize[2] != 0)
         {
-            screen.printStars.resize(vectorSize[2]);
+            screen.printStars.resize(printObjectsSize[2]);
 
-            std::memcpy(screen.printStars.data(), &recvBuff[buffCarriage], sizeof(PrintData) * vectorSize[2]);
-            buffCarriage += sizeof(PrintData) * vectorSize[2];
+            std::memcpy(screen.printStars.data(), &recvBuff[buffCarriage], sizeof(PrintData) * printObjectsSize[2]);
+            buffCarriage += sizeof(PrintData) * printObjectsSize[2];
         }
     }
 }
