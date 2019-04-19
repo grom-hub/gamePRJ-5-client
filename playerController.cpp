@@ -13,7 +13,7 @@ PlayerController::PlayerController()
 }
 
 
-void PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
+int PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
 { 
     //std::reverse(createData.name.begin(), createData.name.end());
 
@@ -26,12 +26,17 @@ void PlayerController::createPlayer(Connector &connect, int &myid, CreateData &c
     std::memcpy(&connect.sendBuff[3], createData.name.data(), sizeof(char) * createData.name.size());
     connect.sendSize = sizeof(char) * createData.name.size() + 3;
 
-    connect.syncData();
+
+    if(connect.syncData() == 1) // Выход при потере соединения
+        return 1;
+
 
     if(connect.recvBuff[0] == 2)
     {    
         myid = connect.recvBuff[1];
     }
+
+    return 0;
 }
 
 
