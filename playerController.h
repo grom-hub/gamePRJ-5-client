@@ -22,7 +22,6 @@ public:
 private:
     int unitsFrameNum;
     int pwrPointsFrameNum;
-    int starsFrameNum;
 
 	int printObjectsSize[3];
 

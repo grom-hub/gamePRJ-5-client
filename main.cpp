@@ -25,7 +25,7 @@ int main(int args, char *argv[])
 
     CreateData createData;
     createData.skin = 'A';
-    createData.tag = "<YO>";
+    createData.name = "Name";
     // int fakeInput = 0;
     // int fakeInputCounter = 0;
 

@@ -47,16 +47,16 @@ int NcScreen::mainMenu(CreateData &createData, int &gameMode)
         mvaddstr(row / 2 - 2, col / 4, " Start");
         mvaddstr(row / 2 - 1, col / 4, " Skin = ");
         addch(createData.skin);
-        mvaddstr(row / 2 - 0, col / 4, " Tag = ");
-        addstr(createData.tag.c_str());
+        mvaddstr(row / 2 - 0, col / 4, " Name = ");
+        addstr(createData.name.c_str());
         mvaddstr(row / 2 + 1, col / 4, " Game mode = ");
         printw("%d", gameMode);
         mvaddstr(row / 2 + 2, col / 4, " Exit");
         mvaddch(row / 2 - 2 + cursPos, col / 4 - 2, '>');
 
-        mvprintw(0, 1, "Ver %.2f", clientVersion);
+        mvprintw(0, 1, "CharsCollector %.2f", clientVersion);
         mvaddstr(row - 3, 1, "In game controls:");
-        mvaddstr(row - 2, 1, "space = make tag (One point required)");
+
         mvaddstr(row - 1, 1, "q = exit");
 
         key = getch();
@@ -85,9 +85,9 @@ int NcScreen::mainMenu(CreateData &createData, int &gameMode)
         if(key == '\n' && cursPos == 2)
         {
             clear();
-            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your tag: ");
+            mvaddstr(row / 2 - 2 + cursPos, col / 4 + 2, "Enter your name: ");
             getnstr (input, 20);
-            createData.tag = input;
+            createData.name = input;
         }
 
         if(key == '\n' && cursPos == 3)
@@ -163,9 +163,6 @@ int NcScreen::getInput()
             break;
         case KEY_LEFT:
             return 4;
-            break;
-        case ' ':
-            return 5;
             break;
         case 'q':
             return 9;

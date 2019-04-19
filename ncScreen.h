@@ -10,7 +10,7 @@
 struct CreateData
 {
 	char skin;
-	std::string tag;
+	std::string name;
 };
 
 struct PrintData

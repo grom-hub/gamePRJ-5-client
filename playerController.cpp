@@ -10,22 +10,21 @@ PlayerController::PlayerController()
 {
     unitsFrameNum = 0;
     pwrPointsFrameNum = 0;
-    starsFrameNum = 0;
 }
 
 
 void PlayerController::createPlayer(Connector &connect, int &myid, CreateData &createData)
 { 
-    //std::reverse(createData.tag.begin(), createData.tag.end());
+    //std::reverse(createData.name.begin(), createData.name.end());
 
-    connect.sendBuff[0] = 2;
+    connect.sendBuff[0] = 2; // тип пакета
 
-    connect.sendBuff[1] = sizeof(char) * createData.tag.size();
+    connect.sendBuff[1] = sizeof(char) * createData.name.size();
 
-    connect.sendBuff[2] = createData.skin;    
+    connect.sendBuff[2] = createData.skin; 
 
-    std::memcpy(&connect.sendBuff[3], createData.tag.data(), sizeof(char) * createData.tag.size());
-    connect.sendSize = sizeof(char) * createData.tag.size() + 3;
+    std::memcpy(&connect.sendBuff[3], createData.name.data(), sizeof(char) * createData.name.size());
+    connect.sendSize = sizeof(char) * createData.name.size() + 3;
 
     connect.syncData();
 
@@ -45,7 +44,7 @@ void PlayerController::setCommand(int input, int &myid, char *sendBuff, int &sen
     sendBuff[2] = input;
     sendBuff[3] = unitsFrameNum;
     sendBuff[4] = pwrPointsFrameNum;
-    sendBuff[5] = starsFrameNum;
+    sendBuff[5] = 0; // резерв
 
     sendSize = 6;
         
@@ -65,7 +64,6 @@ void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
 
         unitsFrameNum = recvBuff[1];
         pwrPointsFrameNum = recvBuff[2];
-        starsFrameNum = recvBuff[3];
 
 
         std::memcpy(&printObjectsSize, &recvBuff[4], sizeof(int) * 3);
@@ -91,14 +89,7 @@ void PlayerController::recvBuffHandler(char *recvBuff, NcScreen &screen)
             buffCarriage += sizeof(PrintStatusData);
         }
 
-
-        if(printObjectsSize[2] != 0)
-        {
-            screen.printStars.resize(printObjectsSize[2]);
-
-            std::memcpy(screen.printStars.data(), &recvBuff[buffCarriage], sizeof(PrintData) * printObjectsSize[2]);
-            buffCarriage += sizeof(PrintData) * printObjectsSize[2];
-        }
+        // printObjectsSize[2] != 0
     }
 }
 
