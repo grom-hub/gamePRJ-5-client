@@ -39,7 +39,8 @@ int Connector::connectServer(int gameMode)
 	//addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // INADDR_LOOPBACK - петля типа 127.0.0.1 (127.0.0.0/8).
 	if(gameMode == 1)
 	{
-		addr.sin_addr.s_addr = inet_addr("192.168.0.78");
+		addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+		// addr.sin_addr.s_addr = inet_addr("192.168.0.78");
 		addr.sin_port = htons(3425);
 	}
 
