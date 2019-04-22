@@ -167,6 +167,9 @@ int NcScreen::getInput()
         case 't':
             return 5;
             break;
+        case 'g':
+            return 6;
+            break;
         case 'q':
             return 9;
             break;

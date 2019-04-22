@@ -76,27 +76,30 @@ int Connector::syncData()
 	if(bytesRead <= 0) // Выход при потере соединения
 		return 1;
 
-	std::memcpy(&targetRecvSize, &recvPreBuff, sizeof(int));
-
-	std::memcpy(&recvBuff, &recvPreBuff[sizeof(int)], bytesRead - sizeof(int));
-
-	totalBytesRead = bytesRead - sizeof(int);
-
-
-	while(totalBytesRead != targetRecvSize)
+	if(bytesRead != 1) // Неоднозначное условие (доработать)
 	{
-		usleep(1000);
+		std::memcpy(&targetRecvSize, &recvPreBuff, sizeof(int));
 
-		pbCount ++;
+		std::memcpy(&recvBuff, &recvPreBuff[sizeof(int)], bytesRead - sizeof(int));
 
-		bytesRead = recv(sock, recvPreBuff, 102400, 0);
+		totalBytesRead = bytesRead - sizeof(int);
 
-		if(bytesRead <= 0) // Выход при потере соединения
-			return 1;
 
-		std::memcpy(&recvBuff[totalBytesRead], &recvPreBuff, bytesRead);
+		while(totalBytesRead != targetRecvSize)
+		{
+			usleep(1000);
 
-		totalBytesRead += bytesRead;
+			pbCount ++;
+
+			bytesRead = recv(sock, recvPreBuff, 102400, 0);
+
+			if(bytesRead <= 0) // Выход при потере соединения
+				return 1;
+
+			std::memcpy(&recvBuff[totalBytesRead], &recvPreBuff, bytesRead);
+
+			totalBytesRead += bytesRead;
+		}
 	}
 
  	return 0;

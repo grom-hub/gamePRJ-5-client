@@ -41,8 +41,9 @@ int main(int args, char *argv[])
 
     command = screen.mainMenu(createData, gameMode);
 
-    if(connect.connectServer(gameMode) == 1) // Выход при потере соединения
-        command = 9;
+    if(command != 9)
+        if(connect.connectServer(gameMode) == 1) // Выход при потере соединения
+            command = 9;
 
     if(command != 9)
         if(controller.createPlayer(connect, myid, createData) == 1) // Выход при потере соединения
