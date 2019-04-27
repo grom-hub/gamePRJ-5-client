@@ -101,6 +101,8 @@ int Connector::syncData()
 			totalBytesRead += bytesRead;
 		}
 	}
+	else
+		recvBuff[0] = 0;
 
  	return 0;
 }

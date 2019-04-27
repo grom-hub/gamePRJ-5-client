@@ -54,10 +54,10 @@ int NcScreen::mainMenu(CreateData &createData, int &gameMode)
         mvaddstr(row / 2 + 2, col / 4, " Exit");
         mvaddch(row / 2 - 2 + cursPos, col / 4 - 2, '>');
 
-        mvprintw(0, 1, "CharsCollector %.2f", clientVersion);
-        mvaddstr(row - 3, 1, "In game controls:");
+        mvprintw(0, 0, "PotaynoyLaz %.2f", clientVersion);
+        mvaddstr(row - 3, 0, "In game controls:");
 
-        mvaddstr(row - 1, 1, "q = exit");
+        mvaddstr(row - 1, 0, "q = exit");
 
         key = getch();
 
@@ -187,7 +187,7 @@ void NcScreen::printScreen(int &myid, int &pbCount)
     if(updScreen)
     {
         updScreen = false;
-        //refreshCount ++;
+        // refreshCount ++;
 
         setCam(myid);
 
@@ -210,7 +210,7 @@ void NcScreen::printScreen(int &myid, int &pbCount)
 
         mvprintw(0, 1, "Points = %d", printStatus.pwr);
         // mvprintw(1, 1, "Package build count = %d", pbCount);
-        //mvprintw(1, 1, "Refresh count = %d", refreshCount);
+        // mvprintw(1, 1, "Refresh count = %d", refreshCount);
         //refresh();
     }
 
