@@ -205,7 +205,7 @@ void NcScreen::printScreen(int &myid, int &pbCount)
             mvaddch(printUnits[i].x + camX, printUnits[i].y + camY, printUnits[i].skin);
         }
 
-        mvprintw(0, 1, "Points = %d", printStatus.pwr);
+        mvprintw(0, 0, "PWR = %d", printStatus.pwr);
         // mvprintw(1, 1, "Package build count = %d", pbCount);
         // mvprintw(1, 1, "Refresh count = %d", refreshCount);
         //refresh();
